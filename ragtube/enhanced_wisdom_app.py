@@ -316,6 +316,7 @@ Please continue the response naturally from where it was cut off."""
                 'video_title': result['video_title'],
                 'timestamp': result['timestamp'],
                 'url': result['url'],
+                'text': result['text'],  # Add the full text field
                 'preview': result['text'][:200] + '...' if len(result['text']) > 200 else result['text'],
                 'score': result['score']
             }
