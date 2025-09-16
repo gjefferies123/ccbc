@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Christ Chapel BC Sermon Search</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .search-container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        #searchInput {
+            flex: 1;
+            padding: 15px 20px;
+            border: 2px solid #e1e8ed;
+            border-radius: 10px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        #searchInput:focus {
+            border-color: #667eea;
+        }
+
+        #searchButton {
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        #searchButton:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        #searchButton:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .examples {
+            margin-top: 20px;
+        }
+
+        .examples h3 {
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .example-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .example-tag {
+            background: #f0f0f0;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-size: 14px;
+        }
+
+        .example-tag:hover {
+            background: #e0e0e0;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .results {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .result-item {
+            border: 1px solid #e1e8ed;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: box-shadow 0.3s;
+        }
+
+        .result-item:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .result-score {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .result-timestamp {
+            color: #666;
+            font-weight: bold;
+        }
+
+        .result-text {
+            margin: 15px 0;
+            line-height: 1.6;
+            color: #444;
+        }
+
+        .result-url {
+            display: inline-block;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: bold;
+            border: 2px solid #667eea;
+            padding: 8px 15px;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .result-url:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .result-tags {
+            margin-top: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+
+        .result-tag {
+            background: #f0f8ff;
+            color: #667eea;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            border: 1px solid #e1e8ed;
+        }
+
+        .error {
+            background: #ffebee;
+            color: #c62828;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #c62828;
+        }
+
+        .stats {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .search-box {
+                flex-direction: column;
+            }
+            
+            .example-tags {
+                justify-content: center;
+            }
+            
+            .result-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏛️ Christ Chapel BC</h1>
+            <p>Search sermons and find Biblical answers to your questions</p>
+        </div>
+
+        <div id="stats" class="stats" style="display: none;">
+            📊 <span id="statsText">Loading...</span>
+        </div>
+
+        <div class="search-container">
+            <div class="search-box">
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    placeholder="Ask any question about faith, the Bible, or Christian living..."
+                    autocomplete="off"
+                >
+                <button id="searchButton">Search</button>
+            </div>
+
+            <div class="examples">
+                <h3>Try asking about:</h3>
+                <div class="example-tags">
+                    <span class="example-tag">What does the Bible say about faith?</span>
+                    <span class="example-tag">How can I grow spiritually?</span>
+                    <span class="example-tag">What is God's plan for my life?</span>
+                    <span class="example-tag">How do I pray effectively?</span>
+                    <span class="example-tag">What does it mean to follow Jesus?</span>
+                    <span class="example-tag">How can I find peace?</span>
+                    <span class="example-tag">What is salvation?</span>
+                    <span class="example-tag">How do I read the Bible?</span>
+                </div>
+            </div>
+        </div>
+
+        <div id="loading" class="loading" style="display: none;">
+            <div class="spinner"></div>
+            <p>Searching sermons...</p>
+        </div>
+
+        <div id="results" class="results" style="display: none;">
+            <h2 id="resultsTitle">Search Results</h2>
+            <div id="resultsContainer"></div>
+        </div>
+    </div>
+
+    <script>
+        // DOM elements
+        const searchInput = document.getElementById('searchInput');
+        const searchButton = document.getElementById('searchButton');
+        const loading = document.getElementById('loading');
+        const results = document.getElementById('results');
+        const resultsContainer = document.getElementById('resultsContainer');
+        const resultsTitle = document.getElementById('resultsTitle');
+        const stats = document.getElementById('stats');
+        const statsText = document.getElementById('statsText');
+
+        // Load stats on page load
+        loadStats();
+
+        // Event listeners
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+
+        searchButton.addEventListener('click', performSearch);
+
+        // Example tag clicks
+        document.querySelectorAll('.example-tag').forEach(tag => {
+            tag.addEventListener('click', function() {
+                searchInput.value = this.textContent;
+                performSearch();
+            });
+        });
+
+        async function loadStats() {
+            try {
+                const response = await fetch('/stats');
+                const data = await response.json();
+                
+                if (data.total_vectors) {
+                    statsText.textContent = `${data.total_vectors} sermon segments available for search`;
+                    stats.style.display = 'block';
+                }
+            } catch (error) {
+                console.log('Could not load stats:', error);
+            }
+        }
+
+        async function performSearch() {
+            const query = searchInput.value.trim();
+            
+            if (!query) {
+                alert('Please enter a question');
+                return;
+            }
+
+            // Show loading
+            loading.style.display = 'block';
+            results.style.display = 'none';
+            searchButton.disabled = true;
+
+            try {
+                const response = await fetch('/search', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ query: query })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    displayResults(data);
+                } else {
+                    displayError(data.error || 'Search failed');
+                }
+            } catch (error) {
+                displayError('Network error: ' + error.message);
+            } finally {
+                loading.style.display = 'none';
+                searchButton.disabled = false;
+            }
+        }
+
+        function displayResults(data) {
+            resultsTitle.textContent = `Found ${data.total} results for: "${data.query}"`;
+            resultsContainer.innerHTML = '';
+
+            if (data.results.length === 0) {
+                resultsContainer.innerHTML = '<p style="text-align: center; color: #666; padding: 40px;">No results found. Try rephrasing your question.</p>';
+            } else {
+                data.results.forEach((result, index) => {
+                    const resultElement = createResultElement(result, index + 1);
+                    resultsContainer.appendChild(resultElement);
+                });
+            }
+
+            results.style.display = 'block';
+            results.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function createResultElement(result, index) {
+            const div = document.createElement('div');
+            div.className = 'result-item';
+
+            // Create relevance tags
+            const tags = [];
+            if (result.relevance) {
+                Object.entries(result.relevance).forEach(([key, value]) => {
+                    if (value) {
+                        tags.push(key.replace('contains_', ''));
+                    }
+                });
+            }
+
+            const tagsHtml = tags.length > 0 
+                ? `<div class="result-tags">${tags.map(tag => `<span class="result-tag">${tag}</span>`).join('')}</div>`
+                : '';
+
+            div.innerHTML = `
+                <div class="result-header">
+                    <span class="result-timestamp">⏰ ${result.timestamp} | Video: ${result.video_id}</span>
+                    <span class="result-score">Score: ${result.score}</span>
+                </div>
+                <div class="result-text">${result.text}</div>
+                <a href="${result.url}" target="_blank" class="result-url">
+                    ▶️ Watch at ${result.timestamp}
+                </a>
+                ${tagsHtml}
+            `;
+
+            return div;
+        }
+
+        function displayError(message) {
+            resultsContainer.innerHTML = `<div class="error">❌ ${message}</div>`;
+            results.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
