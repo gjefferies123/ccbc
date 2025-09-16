@@ -1,0 +1,41 @@
+description: "Sample evaluation set for RAGTube - Christian/theological content queries"
+queries:
+  - q: "forgiveness"
+    must_include: ["forgive", "forgiveness", "mercy"]
+    should_link_video_id: null
+    
+  - q: "what is grace?"
+    must_include: ["grace", "unmerited", "favor"]
+    should_link_video_id: null
+    
+  - q: "how to pray effectively"
+    must_include: ["prayer", "pray", "communicate"]
+    should_link_video_id: null
+    
+  - q: "meaning of salvation"
+    must_include: ["salvation", "saved", "eternal"]
+    should_link_video_id: null
+    
+  - q: "biblical love"
+    must_include: ["love", "agape", "unconditional"]
+    should_link_video_id: null
+    
+  - q: "faith vs works"
+    must_include: ["faith", "works", "righteousness"]
+    should_link_video_id: null
+    
+  - q: "purpose of suffering"
+    must_include: ["suffering", "pain", "growth"]
+    should_link_video_id: null
+    
+  - q: "holy spirit role"
+    must_include: ["holy spirit", "spirit", "guidance"]
+    should_link_video_id: null
+    
+  - q: "christian discipleship"
+    must_include: ["disciple", "follow", "growth"]
+    should_link_video_id: null
+    
+  - q: "eternal life meaning"
+    must_include: ["eternal", "life", "heaven"]
+    should_link_video_id: null

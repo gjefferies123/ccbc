@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biblical Wisdom App | Christ Chapel BC</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8f9fa;
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: white;
+            border-bottom: 1px solid #e9ecef;
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.2em;
+            margin-bottom: 8px;
+            color: #212529;
+            font-weight: 600;
+        }
+
+        .header p {
+            font-size: 1em;
+            color: #6c757d;
+            margin-bottom: 4px;
+        }
+
+        .subtitle {
+            font-size: 0.9em;
+            color: #868e96;
+        }
+
+        .chat-container {
+            padding: 30px;
+            min-height: 400px;
+        }
+
+        .question-form {
+            margin-bottom: 30px;
+        }
+
+        .question-input {
+            width: 100%;
+            min-height: 120px;
+            padding: 16px;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            font-size: 16px;
+            resize: vertical;
+            transition: border-color 0.2s;
+            font-family: inherit;
+            background: #fff;
+        }
+
+        .question-input:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+        }
+
+        .ask-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin-top: 12px;
+            font-weight: 500;
+        }
+
+        .ask-button:hover {
+            background: #0056b3;
+        }
+
+        .ask-button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            color: #6c757d;
+        }
+
+        .spinner {
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #007bff;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .response-container {
+            background: #fff;
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            padding: 24px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .guidance {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #212529;
+            margin-bottom: 24px;
+        }
+
+        .guidance h3 {
+            color: #212529;
+            margin: 20px 0 12px 0;
+            font-size: 1.1em;
+            font-weight: 600;
+        }
+
+        .guidance strong {
+            color: #212529;
+            font-weight: 600;
+        }
+
+        .sources {
+            border-top: 1px solid #e9ecef;
+            padding-top: 20px;
+        }
+
+        .sources h4 {
+            color: #6c757d;
+            margin-bottom: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .source-item {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            border-left: 3px solid #007bff;
+        }
+
+        .source-timestamp {
+            font-weight: 600;
+            color: #007bff;
+            font-size: 14px;
+        }
+
+        .source-timestamp a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .source-timestamp a:hover {
+            text-decoration: underline;
+        }
+
+        .source-preview {
+            color: #6c757d;
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        .examples {
+            background: #f8f9fa;
+            border-radius: 6px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .examples h3 {
+            color: #212529;
+            margin-bottom: 12px;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .example-questions {
+            display: grid;
+            gap: 8px;
+        }
+
+        .example-btn {
+            background: white;
+            border: 1px solid #dee2e6;
+            padding: 10px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+            font-size: 14px;
+            color: #495057;
+        }
+
+        .example-btn:hover {
+            background: #e9ecef;
+            border-color: #adb5bd;
+        }
+
+        .error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 12px;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                margin: 10px;
+                border-radius: 6px;
+            }
+            
+            .header {
+                padding: 24px 20px;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .chat-container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📖 Biblical Wisdom App</h1>
+            <p>Get practical biblical guidance and Christian wisdom</p>
+            <p class="subtitle">Based on Christ Chapel BC sermons and teachings</p>
+        </div>
+
+        <div class="chat-container">
+            <div class="question-form">
+                <textarea 
+                    id="questionInput" 
+                    class="question-input" 
+                    placeholder="Ask any question about life, relationships, faith, work, or decisions you're facing. For example:
+
+• How do I handle conflict with my spouse biblically?
+• What does the Bible say about managing money?
+• I'm struggling with anxiety about my future. How can I find peace?
+• How do I know God's will for my career decision?
+• What's a biblical approach to dealing with difficult people?"
+                ></textarea>
+                <button id="askButton" class="ask-button">
+                    📖 Get Biblical Guidance
+                </button>
+            </div>
+
+            <div id="loading" class="loading">
+                <div class="spinner"></div>
+                <p>Seeking biblical wisdom...</p>
+            </div>
+
+            <div id="responseContainer" class="response-container">
+                <div id="guidance" class="guidance"></div>
+                <div id="sources" class="sources"></div>
+            </div>
+
+            <div class="examples">
+                <h3>💡 Example Questions</h3>
+                <div class="example-questions">
+                    <button class="example-btn" onclick="askExample('How do I handle conflict with my spouse biblically?')">
+                        How do I handle conflict with my spouse biblically?
+                    </button>
+                    <button class="example-btn" onclick="askExample('What does the Bible say about managing money and finances?')">
+                        What does the Bible say about managing money and finances?
+                    </button>
+                    <button class="example-btn" onclick="askExample('I\'m struggling with anxiety. How can I find biblical peace?')">
+                        I'm struggling with anxiety. How can I find biblical peace?
+                    </button>
+                    <button class="example-btn" onclick="askExample('How do I know God\'s will for my life decisions?')">
+                        How do I know God's will for my life decisions?
+                    </button>
+                    <button class="example-btn" onclick="askExample('How do I grow spiritually when I feel distant from God?')">
+                        How do I grow spiritually when I feel distant from God?
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function askExample(question) {
+            document.getElementById('questionInput').value = question;
+            askQuestion();
+        }
+
+        function formatGuidance(text) {
+            // Convert markdown-style formatting to HTML
+            return text
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/### (.*?)\n/g, '<h3>$1</h3>')
+                .replace(/• (.*?)(\n|$)/g, '<li>$1</li>')
+                .replace(/\n\n/g, '</p><p>')
+                .replace(/^/, '<p>')
+                .replace(/$/, '</p>')
+                .replace(/<p><li>/g, '<ul><li>')
+                .replace(/<\/li><\/p>/g, '</li></ul>')
+                .replace(/<\/li>\s*<li>/g, '</li><li>');
+        }
+
+        async function askQuestion() {
+            const questionInput = document.getElementById('questionInput');
+            const askButton = document.getElementById('askButton');
+            const loading = document.getElementById('loading');
+            const responseContainer = document.getElementById('responseContainer');
+            const guidance = document.getElementById('guidance');
+            const sources = document.getElementById('sources');
+
+            const question = questionInput.value.trim();
+            
+            if (!question) {
+                alert('Please enter a question first.');
+                return;
+            }
+
+            // Show loading state
+            askButton.disabled = true;
+            askButton.textContent = 'Seeking wisdom...';
+            loading.style.display = 'block';
+            responseContainer.style.display = 'none';
+
+            try {
+                const response = await fetch('/ask', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ question: question })
+                });
+
+                const data = await response.json();
+
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+
+                // Display guidance
+                guidance.innerHTML = formatGuidance(data.guidance);
+
+                // Display sources
+                if (data.sources && data.sources.length > 0) {
+                    sources.innerHTML = `
+                        <h4>📚 Based on Sermon Teachings:</h4>
+                        ${data.sources.map(source => `
+                            <div class="source-item">
+                                <div class="source-timestamp">
+                                    <a href="${source.url}" target="_blank" style="color: #f39c12; text-decoration: none;">
+                                        🎥 ${source.timestamp} - ${source.video_title}
+                                    </a>
+                                </div>
+                                <div class="source-preview">${source.preview}</div>
+                            </div>
+                        `).join('')}
+                    `;
+                } else {
+                    sources.innerHTML = '';
+                }
+
+                responseContainer.style.display = 'block';
+
+            } catch (error) {
+                console.error('Error:', error);
+                guidance.innerHTML = `
+                    <div class="error">
+                        <strong>Sorry, there was an error:</strong> ${error.message}
+                        <br><br>
+                        Please try again, or contact support if the problem persists.
+                    </div>
+                `;
+                sources.innerHTML = '';
+                responseContainer.style.display = 'block';
+            }
+
+            // Reset button state
+            askButton.disabled = false;
+            askButton.innerHTML = '📖 Get Biblical Guidance';
+            loading.style.display = 'none';
+        }
+
+        // Add event listeners
+        document.getElementById('askButton').addEventListener('click', askQuestion);
+        
+        document.getElementById('questionInput').addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'Enter') {
+                askQuestion();
+            }
+        });
+
+        // Focus on the input when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('questionInput').focus();
+        });
+    </script>
+</body>
+</html>
