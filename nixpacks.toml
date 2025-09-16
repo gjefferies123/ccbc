@@ -1,8 +1,13 @@
 [phases.setup]
-nixPkgs = ["python311", "python311Packages.pip"]
+nixPkgs = ["python311", "python311Packages.pip", "python311Packages.setuptools"]
 
 [phases.install]
-cmds = ["python -m pip install --upgrade pip", "python -m pip install -r requirements.txt"]
+cmds = [
+  "python -c 'import sys; print(sys.executable)'",
+  "python -c 'import pip; print(pip.__version__)'",
+  "python -m pip install --upgrade pip",
+  "python -m pip install -r requirements.txt"
+]
 
 [phases.build]
 cmds = ["echo 'Build complete'"]
