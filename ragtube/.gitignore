@@ -41,3 +41,7 @@ ENV/
 dist/
 build/
 *.egg-info/
+
+# Railway deployment files (keep these)
+!railway.json
+!nixpacks.toml
