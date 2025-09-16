@@ -77,6 +77,7 @@ def ask_question():
         }), 500
 
 @app.route('/health')
+@app.route('/healthz')
 def health_check():
     """Health check endpoint."""
     return jsonify({
